@@ -24,6 +24,7 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	auth.AddRouteGroup(r)
+
+	auth.CreateRestAdapter().RegisterRoutes(r.Group("/auth"))
 	_ = r.Run()
 }
