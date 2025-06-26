@@ -16,6 +16,10 @@ func (opt *Optional[U]) Get() (*U, bool) {
 	return opt.field, opt.field != nil
 }
 
+func (opt *Optional[U]) GetUnchecked() *U {
+	return opt.field
+}
+
 func (opt *Optional[U]) IsEmpty() bool {
 	return opt.field == nil
 }

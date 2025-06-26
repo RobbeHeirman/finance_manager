@@ -50,7 +50,7 @@ func InstallApps() {
 
 func main() {
 	//InstallApps()
-	r := gin.New()
+	r := CreateRestEndpoint()
 	AddAuthEndpoint(r)
 	_ = r.Run()
 }

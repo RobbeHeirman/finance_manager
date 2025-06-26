@@ -51,7 +51,15 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 		return nil, &res
 	}
 
-	user := adapter.domain.CreateUpdateUser(googleUser)
+	user, err := adapter.domain.CreateUpdateUser(googleUser)
+	if err != nil {
+		res := core.HttpError{
+			Code:    http.StatusInternalServerError,
+			Message: "Could not save to the database",
+		}
+		slog.Error("Error updating user", "stacktrace", err.Error())
+		return nil, &res
+	}
 	id, _ := user.GetId().Get()
 	userEmail := user.GetEmail()
 
