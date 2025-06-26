@@ -3,16 +3,18 @@ package _interface
 import (
 	"finance_manager/src/auth/domain"
 	"finance_manager/src/core"
+	"finance_manager/src/core/data_structures"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"log/slog"
 	"net/http"
 )
 
 type RestClient struct {
-	domain *domain.AuthService
+	domain domain.AuthService
 }
 
-func CreateRestClient(authDomain *domain.AuthService) *RestClient {
+func CreateRestClient(authDomain domain.AuthService) *RestClient {
 	return &RestClient{domain: authDomain}
 }
 
@@ -26,11 +28,12 @@ type TokenRequest struct {
 }
 
 type UserResponse struct {
-	Message string `json:"message"`
+	UserId    *uuid.UUID             `json:"userId"`
+	UserEmail *data_structures.Email `json:"userEmail"`
 }
 
 func (adapter *RestClient) googleAuthHandler(request *TokenRequest) (*UserResponse, *core.HttpError) {
-	_, err := ValidateGoogleUserToken(request.Token)
+	claims, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {
 		res := core.HttpError{
 			Code:    http.StatusUnauthorized,
@@ -39,5 +42,21 @@ func (adapter *RestClient) googleAuthHandler(request *TokenRequest) (*UserRespon
 		slog.Error("Error validating google user token", "stacktrace", err.Error())
 		return nil, &res
 	}
-	return &UserResponse{Message: "Login success"}, nil
+	googleUser, err := GoogleClaimsToUserAdapter(claims)
+	if err != nil {
+		res := core.HttpError{
+			Code:    http.StatusInternalServerError,
+			Message: "Could not handle google claims",
+		}
+		return nil, &res
+	}
+
+	user := adapter.domain.CreateUpdateUser(googleUser)
+	id, _ := user.GetId().Get()
+	userEmail := user.GetEmail()
+
+	return &UserResponse{
+		UserId:    id,
+		UserEmail: userEmail,
+	}, nil
 }

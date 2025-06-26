@@ -4,15 +4,15 @@ type Optional[U any] struct {
 	field *U
 }
 
-func CreateOptional[U any](field *U) Optional[U] {
-	return Optional[U]{field: field}
+func CreateOptional[U any](field *U) *Optional[U] {
+	return &Optional[U]{field: field}
 }
 
-func CreateEmptyOptional[U any]() Optional[U] {
-	return Optional[U]{field: nil}
+func CreateEmptyOptional[U any]() *Optional[U] {
+	return &Optional[U]{field: nil}
 }
 
-func (opt *Optional[U]) get() (*U, bool) {
+func (opt *Optional[U]) Get() (*U, bool) {
 	return opt.field, opt.field != nil
 }
 

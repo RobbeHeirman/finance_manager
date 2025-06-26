@@ -2,6 +2,6 @@ package domain
 
 type AuthServiceImpl struct{}
 
-func (service *AuthServiceImpl) CreateUpdateUser(user *User) User {
-
+func (service *AuthServiceImpl) CreateUpdateUser(user *User) *User {
+	return nil
 }
