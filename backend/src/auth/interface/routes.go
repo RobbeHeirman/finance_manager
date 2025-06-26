@@ -1,23 +1,22 @@
-package auth
+package _interface
 
 import (
 	"finance_manager/src/auth/domain"
-	"finance_manager/src/auth/persistence"
 	"finance_manager/src/core"
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
 )
 
-type RestAdapter struct {
-	repo persistence.Interface
+type RestClient struct {
+	domain *domain.AuthService
 }
 
-func CreateRestAdapter(repo persistence.Interface) *RestAdapter {
-	return &RestAdapter{repo: repo}
+func CreateRestClient(authDomain *domain.AuthService) *RestClient {
+	return &RestClient{domain: authDomain}
 }
 
-func (adapter *RestAdapter) RegisterRoutes(router *gin.RouterGroup) *RestAdapter {
+func (adapter *RestClient) RegisterRoutes(router *gin.RouterGroup) *RestClient {
 	router.POST("/google_auth", core.RestPostWrapper(adapter.googleAuthHandler))
 	return adapter
 }
@@ -30,8 +29,8 @@ type UserResponse struct {
 	Message string `json:"message"`
 }
 
-func (adapter *RestAdapter) googleAuthHandler(request *TokenRequest) (*UserResponse, *core.HttpError) {
-	_, err := domain.ValidateGoogleUserToken(request.Token)
+func (adapter *RestClient) googleAuthHandler(request *TokenRequest) (*UserResponse, *core.HttpError) {
+	_, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {
 		res := core.HttpError{
 			Code:    http.StatusUnauthorized,

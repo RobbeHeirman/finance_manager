@@ -1,7 +1,9 @@
-package domain
+package _interface
 
 import (
 	"context"
+	"finance_manager/src/auth/domain"
+	"finance_manager/src/core/data_structures"
 	"github.com/goccy/go-json"
 	"google.golang.org/api/idtoken"
 	"log/slog"
@@ -18,6 +20,8 @@ type GoogleClaims struct {
 	Locale     string `json:"locale"`
 }
 
+// ValidateGoogleUserToken Takes in a Google JWT token and returns a GoogleClaims object.
+// A structured object of the JWT claims.
 func ValidateGoogleUserToken(token string) (*GoogleClaims, error) {
 
 	response, err := idtoken.Validate(context.Background(), token, ClientId)
@@ -38,4 +42,28 @@ func ValidateGoogleUserToken(token string) (*GoogleClaims, error) {
 		return nil, err
 	}
 	return &claims, nil
+}
+
+func GoogleClaimsToUserAdapter(claims *GoogleClaims) (*domain.User, error) {
+	email, err := data_structures.NewEmail(claims.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := data_structures.CreateUrl(claims.Picture)
+	if err != nil {
+		return nil, err
+	}
+	user, err := domain.NewUser(
+		nil,
+		&email,
+		&claims.GivenName,
+		&claims.FamilyName,
+		&url,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

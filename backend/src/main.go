@@ -1,7 +1,6 @@
 package main
 
 import (
-	"finance_manager/src/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log/slog"
@@ -25,6 +24,6 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	auth.CreateRestAdapter().RegisterRoutes(r.Group("/auth"))
+	//auth.CreateRestAdapter().RegisterRoutes(r.Group("/auth"))
 	_ = r.Run()
 }
