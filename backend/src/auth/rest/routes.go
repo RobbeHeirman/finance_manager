@@ -1,4 +1,4 @@
-package _interface
+package rest
 
 import (
 	"finance_manager/src/auth/domain"
@@ -10,15 +10,15 @@ import (
 	"net/http"
 )
 
-type RestClient struct {
+type Client struct {
 	domain domain.AuthService
 }
 
-func CreateRestClient(authDomain domain.AuthService) *RestClient {
-	return &RestClient{domain: authDomain}
+func CreateRestClient(authDomain domain.AuthService) *Client {
+	return &Client{domain: authDomain}
 }
 
-func (adapter *RestClient) RegisterRoutes(router *gin.RouterGroup) *RestClient {
+func (adapter *Client) RegisterRoutes(router *gin.RouterGroup) *Client {
 	router.POST("/google_auth", core.RestPostWrapper(adapter.googleAuthHandler))
 	return adapter
 }
@@ -32,7 +32,7 @@ type UserResponse struct {
 	UserEmail *data_structures.Email `json:"userEmail"`
 }
 
-func (adapter *RestClient) googleAuthHandler(request *TokenRequest) (*UserResponse, *core.HttpError) {
+func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *core.HttpError) {
 	claims, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {
 		res := core.HttpError{

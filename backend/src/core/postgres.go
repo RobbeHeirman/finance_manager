@@ -12,7 +12,7 @@ func CreateConnectionPoolFromEnv() (*pgxpool.Pool, error) {
 	user := getEnv("DB_USER", "admin")
 	password := getEnv("DB_PASSWORD", "admin")
 	host := getEnv("DB_HOST", "localhost")
-	port := getEnv("DB_PORT", "3306")
+	port := getEnv("DB_PORT", "5432")
 	database := getEnv("DB_DATABASE", "finance_manager")
 
 	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, password, host, port, database)

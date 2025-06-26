@@ -1,13 +1,18 @@
 package main
 
 import (
+	"finance_manager/src/auth/domain"
+	"finance_manager/src/auth/persistence"
+	"finance_manager/src/auth/rest"
+	"finance_manager/src/core"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"log"
 	"log/slog"
 	"time"
 )
 
-func main() {
+func CreateRestEndpoint() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -23,7 +28,29 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	return r
+}
 
-	//auth.CreateRestAdapter().RegisterRoutes(r.Group("/auth"))
+func AddAuthEndpoint(r *gin.Engine) {
+	client := rest.CreateRestClient(domain.NewAuthServiceImpl())
+	client.RegisterRoutes(r.Group("/auth"))
+}
+
+func InstallApps() {
+	env, err := core.CreateConnectionPoolFromEnv()
+	if err != nil {
+		log.Fatalf("Failed to create connection pool. Error: %s", err)
+	}
+
+	repo := persistence.CreateUserRepo(env)
+	if err = repo.Init(); err != nil {
+		log.Fatalf("Failed to initialize repo. Error: %s", err)
+	}
+}
+
+func main() {
+	//InstallApps()
+	r := gin.New()
+	AddAuthEndpoint(r)
 	_ = r.Run()
 }

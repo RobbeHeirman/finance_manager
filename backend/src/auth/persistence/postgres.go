@@ -19,7 +19,7 @@ type UserRepo struct {
 }
 
 func (repo *UserRepo) Init() error {
-	_, err := repo.pool.Exec(context.Background(), "")
+	_, err := repo.pool.Exec(context.Background(), iniUserTableQuery)
 	if err != nil {
 		slog.Error("Failed to init User table", iniUserTableQuery, err.Error())
 	}
