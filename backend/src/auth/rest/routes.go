@@ -2,8 +2,8 @@ package rest
 
 import (
 	"finance_manager/src/auth/domain"
-	"finance_manager/src/core"
 	"finance_manager/src/core/data_structures"
+	"finance_manager/src/core/rest"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"log/slog"
@@ -19,7 +19,7 @@ func CreateRestClient(authDomain domain.AuthService) *Client {
 }
 
 func (adapter *Client) RegisterRoutes(router *gin.RouterGroup) *Client {
-	router.POST("/google_auth", core.RestPostWrapper(adapter.googleAuthHandler))
+	router.POST("/google_auth", rest.RestPostWrapper(adapter.googleAuthHandler))
 	return adapter
 }
 
@@ -32,10 +32,10 @@ type UserResponse struct {
 	UserEmail *data_structures.Email `json:"userEmail"`
 }
 
-func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *core.HttpError) {
+func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *rest.HttpError) {
 	claims, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {
-		res := core.HttpError{
+		res := rest.HttpError{
 			Code:    http.StatusUnauthorized,
 			Message: err.Error(),
 		}
@@ -44,7 +44,7 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 	}
 	googleUser, err := GoogleClaimsToUserAdapter(claims)
 	if err != nil {
-		res := core.HttpError{
+		res := rest.HttpError{
 			Code:    http.StatusInternalServerError,
 			Message: "Could not handle google claims",
 		}
@@ -53,7 +53,7 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 
 	user, err := adapter.domain.CreateUpdateUser(googleUser)
 	if err != nil {
-		res := core.HttpError{
+		res := rest.HttpError{
 			Code:    http.StatusInternalServerError,
 			Message: "Could not save to the database",
 		}

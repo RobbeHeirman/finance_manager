@@ -4,7 +4,7 @@ import (
 	"finance_manager/src/auth/domain"
 	"finance_manager/src/auth/persistence"
 	"finance_manager/src/auth/rest"
-	"finance_manager/src/core"
+	core_persistance "finance_manager/src/core/persistence"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -37,7 +37,7 @@ func AddAuthEndpoint(r *gin.Engine) {
 }
 
 func InstallApps() {
-	env, err := core.CreateConnectionPoolFromEnv()
+	env, err := core_persistance.CreateConnectionPoolFromEnv()
 	if err != nil {
 		log.Fatalf("Failed to create connection pool. Error: %s", err)
 	}

@@ -1,4 +1,4 @@
-package core
+package persistence
 
 type Repository interface {
 	Init() error

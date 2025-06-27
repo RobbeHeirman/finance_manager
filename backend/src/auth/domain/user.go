@@ -32,6 +32,10 @@ func (user *User) GetId() *data_structures.Optional[uuid.UUID] {
 	return data_structures.CreateOptional(user.id)
 }
 
+func (user *User) SetId(id *uuid.UUID) {
+	user.id = id
+}
+
 func (user *User) GetEmail() *data_structures.Email {
 	return user.email
 }

@@ -28,7 +28,7 @@ func (repo *UserRepo) Init() error {
 	return nil
 }
 
-func (repo *UserRepo) CreateUpdateUser(user *domain.User) (*domain.User, error) {
+func (repo *UserRepo) CreateUpdateUser(user *domain.User) (*uuid.UUID, error) {
 	var id uuid.UUID
 	err := repo.pool.QueryRow(
 		context.Background(),
@@ -50,11 +50,5 @@ func (repo *UserRepo) CreateUpdateUser(user *domain.User) (*domain.User, error) 
 	if err != nil {
 		return nil, err
 	}
-	return domain.NewUser(
-		&id,
-		user.GetEmail(),
-		user.GetFirstName().GetUnchecked(),
-		user.GeTLastName().GetUnchecked(),
-		user.GeTImageURL().GetUnchecked(),
-	)
+	return &id, nil
 }
