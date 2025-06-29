@@ -1,10 +1,10 @@
 package main
 
 import (
-	"finance_manager/src/auth/domain"
-	"finance_manager/src/auth/persistence"
-	"finance_manager/src/auth/rest"
-	core_persistance "finance_manager/src/core/persistence"
+	"finance_manager/src/auth"
+	"finance_manager/src/core/config"
+	"finance_manager/src/core/persistence"
+	"finance_manager/src/core/rest"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -31,26 +31,21 @@ func CreateRestEndpoint() *gin.Engine {
 	return r
 }
 
-func AddAuthEndpoint(r *gin.Engine) {
-	client := rest.CreateRestClient(domain.NewAuthServiceImpl())
-	client.RegisterRoutes(r.Group("/auth"))
-}
+func main() {
+	envConfig := config.NewEnvironmentRepository()
+	pool, err := persistence.CreateConnectionPool(envConfig)
+	apps := []rest.App{auth.NewRestApp(envConfig, pool)}
+	r := CreateRestEndpoint()
+	for _, app := range apps {
+		err := app.Init()
+		if err != nil {
+			panic(err)
+		}
+		app.AddRoutes(r)
+	}
 
-func InstallApps() {
-	env, err := core_persistance.CreateConnectionPoolFromEnv()
 	if err != nil {
 		log.Fatalf("Failed to create connection pool. Error: %s", err)
 	}
-
-	repo := persistence.CreateUserRepo(env)
-	if err = repo.Init(); err != nil {
-		log.Fatalf("Failed to initialize repo. Error: %s", err)
-	}
-}
-
-func main() {
-	//InstallApps()
-	r := CreateRestEndpoint()
-	AddAuthEndpoint(r)
 	_ = r.Run()
 }

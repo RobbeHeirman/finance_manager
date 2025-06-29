@@ -12,7 +12,7 @@ import (
 //go:embed sql_queries/schema.sql
 var iniUserTableQuery string
 
-func CreateUserRepo(pool *pgxpool.Pool) UserRepo {
+func NewUserRepo(pool *pgxpool.Pool) UserRepo {
 	return UserRepo{pool: pool}
 }
 

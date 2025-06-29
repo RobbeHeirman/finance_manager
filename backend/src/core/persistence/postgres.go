@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log/slog"
-	"os"
 )
 
-func CreateConnectionPoolFromEnv() (*pgxpool.Pool, error) {
-	user := getEnv("DB_USER", "admin")
-	password := getEnv("DB_PASSWORD", "admin")
-	host := getEnv("DB_HOST", "localhost")
-	port := getEnv("DB_PORT", "5432")
-	database := getEnv("DB_DATABASE", "finance_manager")
+func CreateConnectionPool(config PostgresConfigRepository) (*pgxpool.Pool, error) {
+	user := config.GetDatabaseUser()
+	password := config.GetDatabasePassword()
+	host := config.GetDatabaseHost()
+	port := config.GetDatabasePort()
+	database := config.GetDatabaseName()
 
 	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, password, host, port, database)
 	pool, err := pgxpool.New(context.Background(), connectionString)
@@ -22,13 +21,4 @@ func CreateConnectionPoolFromEnv() (*pgxpool.Pool, error) {
 		return nil, err
 	}
 	return pool, nil
-}
-
-func getEnv(key, fallback string) string {
-	value, ok := os.LookupEnv(key)
-	if !ok {
-		slog.Warn("Environment variable not set. Defaulting to", key, fallback)
-		return fallback
-	}
-	return value
 }
