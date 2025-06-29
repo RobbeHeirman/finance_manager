@@ -1,16 +1,30 @@
 package config
 
-import "os"
+import (
+	"crypto/rsa"
+	"finance_manager/src/core/security"
+	"log/slog"
+	"os"
+)
 
 type EnvironmentRepository struct {
+	privateKey *rsa.PrivateKey
 }
 
 func NewEnvironmentRepository() *EnvironmentRepository {
+
 	return &EnvironmentRepository{}
 }
 
-func (repo *EnvironmentRepository) GetPrivateKey() string {
-	return os.Getenv("RSA_PRIVATE_KEY")
+func (repo *EnvironmentRepository) GetPrivateKey() *rsa.PrivateKey {
+	if repo.privateKey == nil {
+		key, err := security.ParseRSAPrivateKey(os.Getenv("RSA_PRIVATE_KEY"))
+		if err != nil {
+			slog.Error("Error parsing RSA_PRIVATE_KEY", "err", err)
+		}
+		repo.privateKey = key
+	}
+	return repo.privateKey
 }
 
 func (repo *EnvironmentRepository) GetPublicKey() string {
@@ -30,7 +44,7 @@ func (repo *EnvironmentRepository) GetDatabaseName() string {
 }
 
 func (repo *EnvironmentRepository) GetDatabaseUser() string {
-	return os.Getenv("DB_USERNAME")
+	return os.Getenv("DB_USER")
 }
 
 func (repo *EnvironmentRepository) GetDatabasePassword() string {

@@ -65,6 +65,7 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 
 	token, err := adapter.domain.CreateJWTToken(user)
 	if err != nil {
+		slog.Error("Could not create token", "stacktrace", err.Error())
 		res := rest.HttpError{
 			Code:    http.StatusInternalServerError,
 			Message: "Could not create token",
