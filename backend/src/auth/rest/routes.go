@@ -5,7 +5,6 @@ import (
 	"finance_manager/src/core/data_structures"
 	"finance_manager/src/core/rest"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"log/slog"
 	"net/http"
 )
@@ -28,8 +27,11 @@ type TokenRequest struct {
 }
 
 type UserResponse struct {
-	UserId    *uuid.UUID             `json:"userId"`
-	UserEmail *data_structures.Email `json:"userEmail"`
+	JWTToken   *string                `json:"jwtToken"`
+	UserEmail  *data_structures.Email `json:"userEmail"`
+	FirstName  *string                `json:"firstName"`
+	LastName   *string                `json:"lastName"`
+	PictureURL *string                `json:"pictureUrl"`
 }
 
 func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *rest.HttpError) {
@@ -60,11 +62,22 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 		slog.Error("Error updating user", "stacktrace", err.Error())
 		return nil, &res
 	}
-	id, _ := user.GetId().Get()
-	userEmail := user.GetEmail()
 
+	token, err := adapter.domain.CreateJWTToken(user)
+	if err != nil {
+		res := rest.HttpError{
+			Code:    http.StatusInternalServerError,
+			Message: "Could not create token",
+		}
+		return nil, &res
+	}
+
+	userEmail := user.GetEmail()
 	return &UserResponse{
-		UserId:    id,
-		UserEmail: userEmail,
+		JWTToken:   &token,
+		UserEmail:  userEmail,
+		FirstName:  user.GetFirstName().GetUnchecked(),
+		LastName:   user.GeTLastName().GetUnchecked(),
+		PictureURL: user.GeTImageURL().GetUnchecked().ToString(),
 	}, nil
 }

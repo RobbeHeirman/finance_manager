@@ -12,3 +12,7 @@ func CreateUrl(url string) (Url, error) {
 	}
 	return Url{url}, nil
 }
+
+func (u *Url) ToString() *string {
+	return &u.url
+}

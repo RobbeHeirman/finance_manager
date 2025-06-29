@@ -33,19 +33,13 @@ func (repo *UserRepo) CreateUpdateUser(user *domain.User) (*uuid.UUID, error) {
 	err := repo.pool.QueryRow(
 		context.Background(),
 		`
-			INSERT INTO "user" (email, first_name, last_name, picture_url)
-			VALUES ($1, $2, $3, $4)
-			ON CONFLICT	(email) DO UPDATE 
-			SET
-			    first_name = EXCLUDED.first_name,
-			    last_name = EXCLUDED.last_name,
-			    picture_url = EXCLUDED.picture_url
+			INSERT INTO "user" (email)
+			VALUES ($1)
+			ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
 			RETURNING id
 			`,
 		user.GetEmail().ToString(),
-		user.GetFirstName(),
-		user.GeTLastName(),
-		user.GeTImageURL()).Scan(&id)
+	).Scan(&id)
 
 	if err != nil {
 		return nil, err
