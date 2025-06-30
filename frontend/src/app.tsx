@@ -1,7 +1,7 @@
-import GoogleLoginButton from "./google/GoogleLoginButton.tsx";
+import LoginScreen from "./auth/LoginScreen.tsx";
 
 export function App() {
     return <>
-        <GoogleLoginButton/>
+        <LoginScreen/>
     </>
 }
