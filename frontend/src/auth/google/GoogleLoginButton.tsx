@@ -3,6 +3,7 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 import { useEffect, useRef } from 'react';
+import {SetUser, type User} from "../User.tsx";
 
 export default function GoogleLoginButton() {
     const divRef = useRef(null);
@@ -26,15 +27,14 @@ export default function GoogleLoginButton() {
     async function handleCredentialResponse(response: CredentialResponse) {
         console.log("Google ID token:", response.credential);
         const idToken = response.credential; // JWT ID token
-        // Call your Go backend with the token
         const res = await fetch(`${baseUrl}/auth/google_auth`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ idToken }),
         });
-        const data = await res.json();
-        console.log('Backend response:', data);
-
+        const user = await res.json() as User;
+        SetUser(user)
+        console.log('Backend response:', user);
     }
 
     return (
