@@ -1,5 +1,14 @@
 import  {createContext, type ReactNode, useState} from "react";
-import type {User} from "./user.ts";
+
+export type User  ={
+    jwtToken: string,
+    userEmail: string,
+    firstName: string,
+    lastName: string
+    pictureUrl: string
+
+}
+
 
 
 type UserContextType = {
@@ -7,7 +16,8 @@ type UserContextType = {
     setUser: (user: User) => void
 };
 
-const UserContext = createContext<UserContextType>({
+const UserContext = cr
+eateContext<UserContextType>({
     user: null,
     setUser: () => {
     },
