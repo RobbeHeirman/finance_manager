@@ -38,7 +38,7 @@ func (repo *UserRepo) CreateUpdateUser(user *domain.User) (*uuid.UUID, error) {
 			ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
 			RETURNING id
 			`,
-		user.GetEmail().ToString(),
+		*user.GetEmail().ToString(),
 	).Scan(&id)
 
 	if err != nil {

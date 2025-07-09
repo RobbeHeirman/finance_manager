@@ -15,7 +15,7 @@ type User struct {
 }
 
 func NewUser(id *uuid.UUID, email *data_structures.Email, firstName *string, lastName *string, imageURL *data_structures.Url) (*User, error) {
-	if email.ToString() == "" {
+	if *email.ToString() == "" {
 		return nil, errors.New("email cannot be blank")
 	}
 

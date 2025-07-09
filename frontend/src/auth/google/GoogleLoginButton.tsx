@@ -3,11 +3,11 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 import { useEffect, useRef } from 'react';
-import {SetUser, type User} from "../User.tsx";
+import {type User, GetUserContext} from "../User.tsx";
 
 export default function GoogleLoginButton() {
     const divRef = useRef(null);
-
+    const userContext = GetUserContext()
     useEffect(() => {
         if (window.google && divRef.current) {
             window.google.accounts.id.initialize({
@@ -33,7 +33,7 @@ export default function GoogleLoginButton() {
             body: JSON.stringify({ idToken }),
         });
         const user = await res.json() as User;
-        SetUser(user)
+        userContext.setUser(user)
         console.log('Backend response:', user);
     }
 

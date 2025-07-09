@@ -13,6 +13,6 @@ func NewEmail(adres string) (Email, error) {
 	return Email{adres: adres}, nil
 }
 
-func (email *Email) ToString() string {
-	return email.adres
+func (email *Email) ToString() *string {
+	return &email.adres
 }

@@ -13,8 +13,8 @@ func init() {
 	slog.Info("Running  DEV Loading ENVS from .env and .key files")
 	err := godotenv.Load()
 
-	privateKeyPath := "../private.key" // or absolute path
-	publicKeyPath := "../public.key"
+	privateKeyPath := "./private.key" // or absolute path
+	publicKeyPath := "./public.key"
 
 	privateKey, err := loadKey(privateKeyPath)
 	if err != nil {

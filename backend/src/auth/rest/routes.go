@@ -2,7 +2,6 @@ package rest
 
 import (
 	"finance_manager/src/auth/domain"
-	"finance_manager/src/core/data_structures"
 	"finance_manager/src/core/rest"
 	"github.com/gin-gonic/gin"
 	"log/slog"
@@ -27,13 +26,21 @@ type TokenRequest struct {
 }
 
 type UserResponse struct {
-	JWTToken   *string                `json:"jwtToken"`
-	UserEmail  *data_structures.Email `json:"userEmail"`
-	FirstName  *string                `json:"firstName"`
-	LastName   *string                `json:"lastName"`
-	PictureURL *string                `json:"pictureUrl"`
+	JWTToken   *string `json:"jwtToken"`
+	UserEmail  *string `json:"userEmail"`
+	FirstName  *string `json:"firstName"`
+	LastName   *string `json:"lastName"`
+	PictureURL *string `json:"pictureUrl"`
 }
 
+// googleAuthEndpoint godoc
+// @Summary      Authenticate using a Google token
+// @Description  Exchanges a Google OAuth token for an app-specific JWT
+// @Accept		 json
+// @Produce      json
+// @Param        request body TokenRequest  true  "The google token request. Probably received from google oAuth"
+// @Success      200  {object}  UserResponse
+// @Router       /auth/google_auth [post]
 func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *rest.HttpError) {
 	claims, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {
@@ -76,7 +83,7 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 	userEmail := user.GetEmail()
 	return &UserResponse{
 		JWTToken:   &token,
-		UserEmail:  userEmail,
+		UserEmail:  userEmail.ToString(),
 		FirstName:  user.GetFirstName().GetUnchecked(),
 		LastName:   user.GeTLastName().GetUnchecked(),
 		PictureURL: user.GeTImageURL().GetUnchecked().ToString(),

@@ -58,12 +58,8 @@ export function UserProvider({children}: UserProviderProps) {
     )
 }
 
-export function GetUser(): User | null {
-    return useContext(UserContext).user;
-}
-
-export function SetUser(user: User | null) {
-    useContext(UserContext).setUser(user);
+export function GetUserContext() {
+    return useContext(UserContext)
 }
 
 export function IsUserLoggedIn(): boolean {
