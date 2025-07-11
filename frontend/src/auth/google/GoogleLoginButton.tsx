@@ -1,9 +1,10 @@
 import type {CredentialResponse} from "./google-types.ts";
+import {useEffect, useRef} from 'react';
+import {GetUserContext, type User} from "../User.tsx";
+import {Configuration, DefaultApi} from "../../api";
+
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-
-import { useEffect, useRef } from 'react';
-import {type User, GetUserContext} from "../User.tsx";
 
 export default function GoogleLoginButton() {
     const divRef = useRef(null);
@@ -26,14 +27,16 @@ export default function GoogleLoginButton() {
 
     async function handleCredentialResponse(response: CredentialResponse) {
         console.log("Google ID token:", response.credential);
+        const config = new Configuration({
+                "basePath": baseUrl
+            }
+        )
+        const api = new DefaultApi(config)
         const idToken = response.credential; // JWT ID token
-        const res = await fetch(`${baseUrl}/auth/google_auth`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken }),
-        });
-        const user = await res.json() as User;
-        userContext.setUser(user)
+        const res  = await api.authGoogleAuthPost({idToken: idToken})
+
+
+
         console.log('Backend response:', user);
     }
 

@@ -1,0 +1,73 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Finance manager",
+        "contact": {}
+    },
+    "paths": {
+        "/auth/google_auth": {
+            "post": {
+                "description": "Exchanges a Google OAuth token for an app-specific JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Authenticate using a Google token",
+                "parameters": [
+                    {
+                        "description": "The google token request. Probably received from google oAuth",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rest.TokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rest.UserResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "data_structures.Email": {
+            "type": "object"
+        },
+        "rest.TokenRequest": {
+            "type": "object",
+            "properties": {
+                "idToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "rest.UserResponse": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "jwtToken": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "pictureUrl": {
+                    "type": "string"
+                },
+                "userEmail": {
+                    "$ref": "#/definitions/data_structures.Email"
+                }
+            }
+        }
+    }
+}

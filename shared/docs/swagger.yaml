@@ -1,0 +1,46 @@
+definitions:
+  data_structures.Email:
+    type: object
+  rest.TokenRequest:
+    properties:
+      idToken:
+        type: string
+    type: object
+  rest.UserResponse:
+    properties:
+      firstName:
+        type: string
+      jwtToken:
+        type: string
+      lastName:
+        type: string
+      pictureUrl:
+        type: string
+      userEmail:
+        $ref: '#/definitions/data_structures.Email'
+    type: object
+info:
+  contact: {}
+  title: Finance manager
+paths:
+  /auth/google_auth:
+    post:
+      consumes:
+      - application/json
+      description: Exchanges a Google OAuth token for an app-specific JWT
+      parameters:
+      - description: The google token request. Probably received from google oAuth
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/rest.TokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.UserResponse'
+      summary: Authenticate using a Google token
+swagger: "2.0"
