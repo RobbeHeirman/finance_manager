@@ -1,6 +1,6 @@
 import {createContext, type ReactNode, useContext, useState} from "react";
 
-export type User  ={
+export type User = {
     jwtToken: string,
     userEmail: string,
     firstName: string,
@@ -8,7 +8,6 @@ export type User  ={
     pictureUrl: string
 
 }
-
 
 
 export type UserContextType = {
@@ -19,7 +18,8 @@ export type UserContextType = {
 const UserContext = createContext<UserContextType>({
     user: null,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setUser: (_) => {},
+    setUser: (_) => {
+    },
 });
 
 type UserProviderProps = {
@@ -28,7 +28,7 @@ type UserProviderProps = {
 
 const KEY_USER = "user";
 
-function getUserFromLocalStorage() : User | null {
+function getUserFromLocalStorage(): User | null {
     const storedUser = localStorage.getItem(KEY_USER)
     if (!storedUser) {
         return null
@@ -45,8 +45,12 @@ function getUserFromLocalStorage() : User | null {
 
 export function UserProvider({children}: UserProviderProps) {
     const [user, setUser] = useState<User | null>(getUserFromLocalStorage);
-    const setUserWithLocalStorage  = (user: User | null) => {
-        localStorage.setItem(KEY_USER, JSON.stringify(user))
+    const setUserWithLocalStorage = (user: User | null) => {
+        if (user) {
+            localStorage.setItem(KEY_USER, JSON.stringify(user))
+        } else {
+            localStorage.removeItem(KEY_USER)
+        }
         setUser(user)
     }
     return (
