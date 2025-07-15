@@ -1,11 +1,10 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 base.ts
 common.ts
 configuration.ts
-docs/DefaultApi.md
+docs/AuthApi.md
 docs/RestTokenRequest.md
 docs/RestUserResponse.md
 git_push.sh

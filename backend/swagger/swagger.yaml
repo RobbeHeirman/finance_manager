@@ -1,6 +1,4 @@
 definitions:
-  data_structures.Email:
-    type: object
   rest.TokenRequest:
     properties:
       idToken:
@@ -17,11 +15,12 @@ definitions:
       pictureUrl:
         type: string
       userEmail:
-        $ref: '#/definitions/data_structures.Email'
+        type: string
     type: object
 info:
   contact: {}
   title: Finance manager
+  version: 0.0.1
 paths:
   /auth/google_auth:
     post:
@@ -43,4 +42,6 @@ paths:
           schema:
             $ref: '#/definitions/rest.UserResponse'
       summary: Authenticate using a Google token
+      tags:
+      - Auth
 swagger: "2.0"

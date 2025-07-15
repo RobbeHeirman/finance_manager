@@ -36,11 +36,13 @@ type UserResponse struct {
 // googleAuthEndpoint godoc
 // @Summary      Authenticate using a Google token
 // @Description  Exchanges a Google OAuth token for an app-specific JWT
+// @Tags Auth
+// @Router       /auth/google_auth [post]
 // @Accept		 json
 // @Produce      json
 // @Param        request body TokenRequest  true  "The google token request. Probably received from google oAuth"
+// @operationId googleAuth
 // @Success      200  {object}  UserResponse
-// @Router       /auth/google_auth [post]
 func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *rest.HttpError) {
 	claims, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {

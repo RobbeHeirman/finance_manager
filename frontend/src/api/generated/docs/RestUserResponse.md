@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **jwtToken** | **string** |  | [optional] [default to undefined]
 **lastName** | **string** |  | [optional] [default to undefined]
 **pictureUrl** | **string** |  | [optional] [default to undefined]
-**userEmail** | **object** |  | [optional] [default to undefined]
+**userEmail** | **string** |  | [optional] [default to undefined]
 
 ## Example
 

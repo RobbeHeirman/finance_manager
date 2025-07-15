@@ -1,4 +1,4 @@
-# DefaultApi
+# AuthApi
 
 All URIs are relative to *http://localhost*
 
@@ -15,13 +15,13 @@ Exchanges a Google OAuth token for an app-specific JWT
 
 ```typescript
 import {
-    DefaultApi,
+    AuthApi,
     Configuration,
     RestTokenRequest
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new DefaultApi(configuration);
+const apiInstance = new AuthApi(configuration);
 
 let request: RestTokenRequest; //The google token request. Probably received from google oAuth
 

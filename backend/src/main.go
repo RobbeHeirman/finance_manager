@@ -32,6 +32,7 @@ func CreateRestEndpoint() *gin.Engine {
 }
 
 // @title           Finance manager
+// @version 0.0.1
 func main() {
 	envConfig := config.NewEnvironmentRepository()
 	pool, err := persistence.CreateConnectionPool(envConfig)
