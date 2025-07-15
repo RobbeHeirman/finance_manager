@@ -11,7 +11,7 @@ export type User  ={
 
 
 
-type UserContextType = {
+export type UserContextType = {
     user: User | null;
     setUser: (_: User | null) => void;
 };
@@ -45,14 +45,12 @@ function getUserFromLocalStorage() : User | null {
 
 export function UserProvider({children}: UserProviderProps) {
     const [user, setUser] = useState<User | null>(getUserFromLocalStorage);
-
     const setUserWithLocalStorage  = (user: User | null) => {
         localStorage.setItem(KEY_USER, JSON.stringify(user))
         setUser(user)
     }
-
     return (
-        <UserContext value={{user, setUser: setUserWithLocalStorage}}>
+        <UserContext value={{user: user, setUser: setUserWithLocalStorage}}>
             {children}
         </UserContext>
     )

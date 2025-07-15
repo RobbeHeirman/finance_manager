@@ -28,6 +28,7 @@ const docTemplate = `{
                     "Auth"
                 ],
                 "summary": "Authenticate using a Google token",
+                "operationId": "googleAuth",
                 "parameters": [
                     {
                         "description": "The google token request. Probably received from google oAuth",
@@ -43,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/rest.UserResponse"
+                            "$ref": "#/definitions/rest.UserResponseDTO"
                         }
                     }
                 }
@@ -59,7 +60,7 @@ const docTemplate = `{
                 }
             }
         },
-        "rest.UserResponse": {
+        "rest.UserResponseDTO": {
             "type": "object",
             "properties": {
                 "firstName": {

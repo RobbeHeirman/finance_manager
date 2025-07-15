@@ -39,37 +39,37 @@ export interface RestTokenRequest {
 /**
  * 
  * @export
- * @interface RestUserResponse
+ * @interface RestUserResponseDTO
  */
-export interface RestUserResponse {
+export interface RestUserResponseDTO {
     /**
      * 
      * @type {string}
-     * @memberof RestUserResponse
+     * @memberof RestUserResponseDTO
      */
     'firstName'?: string;
     /**
      * 
      * @type {string}
-     * @memberof RestUserResponse
+     * @memberof RestUserResponseDTO
      */
     'jwtToken'?: string;
     /**
      * 
      * @type {string}
-     * @memberof RestUserResponse
+     * @memberof RestUserResponseDTO
      */
     'lastName'?: string;
     /**
      * 
      * @type {string}
-     * @memberof RestUserResponse
+     * @memberof RestUserResponseDTO
      */
     'pictureUrl'?: string;
     /**
      * 
      * @type {string}
-     * @memberof RestUserResponse
+     * @memberof RestUserResponseDTO
      */
     'userEmail'?: string;
 }
@@ -87,9 +87,9 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authGoogleAuthPost: async (request: RestTokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        googleAuth: async (request: RestTokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'request' is not null or undefined
-            assertParamExists('authGoogleAuthPost', 'request', request)
+            assertParamExists('googleAuth', 'request', request)
             const localVarPath = `/auth/google_auth`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -133,10 +133,10 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async authGoogleAuthPost(request: RestTokenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestUserResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.authGoogleAuthPost(request, options);
+        async googleAuth(request: RestTokenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestUserResponseDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.googleAuth(request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AuthApi.authGoogleAuthPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.googleAuth']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -156,8 +156,8 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authGoogleAuthPost(request: RestTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestUserResponse> {
-            return localVarFp.authGoogleAuthPost(request, options).then((request) => request(axios, basePath));
+        googleAuth(request: RestTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestUserResponseDTO> {
+            return localVarFp.googleAuth(request, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -177,8 +177,8 @@ export class AuthApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public authGoogleAuthPost(request: RestTokenRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).authGoogleAuthPost(request, options).then((request) => request(this.axios, this.basePath));
+    public googleAuth(request: RestTokenRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).googleAuth(request, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

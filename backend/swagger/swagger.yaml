@@ -4,7 +4,7 @@ definitions:
       idToken:
         type: string
     type: object
-  rest.UserResponse:
+  rest.UserResponseDTO:
     properties:
       firstName:
         type: string
@@ -27,6 +27,7 @@ paths:
       consumes:
       - application/json
       description: Exchanges a Google OAuth token for an app-specific JWT
+      operationId: googleAuth
       parameters:
       - description: The google token request. Probably received from google oAuth
         in: body
@@ -40,7 +41,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rest.UserResponse'
+            $ref: '#/definitions/rest.UserResponseDTO'
       summary: Authenticate using a Google token
       tags:
       - Auth

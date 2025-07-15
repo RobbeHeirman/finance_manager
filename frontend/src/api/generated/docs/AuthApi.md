@@ -4,10 +4,10 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**authGoogleAuthPost**](#authgoogleauthpost) | **POST** /auth/google_auth | Authenticate using a Google token|
+|[**googleAuth**](#googleauth) | **POST** /auth/google_auth | Authenticate using a Google token|
 
-# **authGoogleAuthPost**
-> RestUserResponse authGoogleAuthPost(request)
+# **googleAuth**
+> RestUserResponseDTO googleAuth(request)
 
 Exchanges a Google OAuth token for an app-specific JWT
 
@@ -25,7 +25,7 @@ const apiInstance = new AuthApi(configuration);
 
 let request: RestTokenRequest; //The google token request. Probably received from google oAuth
 
-const { status, data } = await apiInstance.authGoogleAuthPost(
+const { status, data } = await apiInstance.googleAuth(
     request
 );
 ```
@@ -39,7 +39,7 @@ const { status, data } = await apiInstance.authGoogleAuthPost(
 
 ### Return type
 
-**RestUserResponse**
+**RestUserResponseDTO**
 
 ### Authorization
 

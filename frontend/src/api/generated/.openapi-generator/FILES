@@ -6,6 +6,6 @@ common.ts
 configuration.ts
 docs/AuthApi.md
 docs/RestTokenRequest.md
-docs/RestUserResponse.md
+docs/RestUserResponseDTO.md
 git_push.sh
 index.ts

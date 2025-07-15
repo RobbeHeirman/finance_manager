@@ -25,9 +25,9 @@ type TokenRequest struct {
 	Token string `json:"idToken"`
 }
 
-type UserResponse struct {
-	JWTToken   *string `json:"jwtToken"`
-	UserEmail  *string `json:"userEmail"`
+type UserResponseDTO struct {
+	JWTToken   string  `json:"jwtToken"`
+	UserEmail  string  `json:"userEmail"`
 	FirstName  *string `json:"firstName"`
 	LastName   *string `json:"lastName"`
 	PictureURL *string `json:"pictureUrl"`
@@ -41,9 +41,9 @@ type UserResponse struct {
 // @Accept		 json
 // @Produce      json
 // @Param        request body TokenRequest  true  "The google token request. Probably received from google oAuth"
-// @operationId googleAuth
-// @Success      200  {object}  UserResponse
-func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, *rest.HttpError) {
+// @Id googleAuth
+// @Success      200  {object}  UserResponseDTO
+func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponseDTO, *rest.HttpError) {
 	claims, err := ValidateGoogleUserToken(request.Token)
 	if err != nil {
 		res := rest.HttpError{
@@ -83,9 +83,9 @@ func (adapter *Client) googleAuthHandler(request *TokenRequest) (*UserResponse, 
 	}
 
 	userEmail := user.GetEmail()
-	return &UserResponse{
-		JWTToken:   &token,
-		UserEmail:  userEmail.ToString(),
+	return &UserResponseDTO{
+		JWTToken:   token,
+		UserEmail:  *userEmail.ToString(),
 		FirstName:  user.GetFirstName().GetUnchecked(),
 		LastName:   user.GeTLastName().GetUnchecked(),
 		PictureURL: user.GeTImageURL().GetUnchecked().ToString(),
