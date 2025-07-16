@@ -2,8 +2,7 @@ package domain
 
 import (
 	"errors"
-	"github.com/golang-jwt/jwt/v5"
-	"time"
+	"finance_manager/src/core/security"
 )
 
 type AuthServiceImpl struct {
@@ -38,11 +37,5 @@ func (service *AuthServiceImpl) CreateUpdateUser(user *User) (*User, error) {
 
 func (service *AuthServiceImpl) CreateJWTToken(user *User) (string, error) {
 	privateKey := service.configRepo.GetPrivateKey()
-	now := time.Now()
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-		"id":  user.GetId(),
-		"exp": now.Add(time.Hour * 24).Unix(),
-		"iat": now.Unix(),
-	})
-	return token.SignedString(privateKey)
+	return security.CreateJWT(privateKey, user.id.String())
 }

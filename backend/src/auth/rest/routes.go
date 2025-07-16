@@ -17,7 +17,7 @@ func CreateRestClient(authDomain domain.AuthService) *Client {
 }
 
 func (adapter *Client) RegisterRoutes(router *gin.RouterGroup) *Client {
-	router.POST("/google_auth", rest.RestPostWrapper(adapter.googleAuthHandler))
+	router.POST("/google_auth", rest.PostWrapper(adapter.googleAuthHandler))
 	return adapter
 }
 
