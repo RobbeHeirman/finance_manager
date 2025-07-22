@@ -30,5 +30,4 @@ func (client *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 			slog.Error("Problems closing file", "reason", err.Error())
 		}
 	}()
-
 }
