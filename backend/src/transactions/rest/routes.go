@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"encoding/csv"
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
@@ -30,4 +31,7 @@ func (client *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 			slog.Error("Problems closing file", "reason", err.Error())
 		}
 	}()
+
+	csvReader := csv.NewReader(fileHeader)
+
 }
