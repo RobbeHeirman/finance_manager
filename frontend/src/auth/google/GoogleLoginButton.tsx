@@ -57,6 +57,5 @@ async function handleCredentialResponse(response: CredentialResponse, userContex
         userEmail: data?.userEmail ?? "",
         pictureUrl: data?.pictureUrl ?? ""
     }
-    console.log(user)
     userContext.setUser(user)
 }

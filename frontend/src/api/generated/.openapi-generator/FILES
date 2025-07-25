@@ -7,5 +7,6 @@ configuration.ts
 docs/AuthApi.md
 docs/RestTokenRequest.md
 docs/RestUserResponseDTO.md
+docs/TransactionsApi.md
 git_push.sh
 index.ts

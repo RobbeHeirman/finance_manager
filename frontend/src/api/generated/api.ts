@@ -184,3 +184,118 @@ export class AuthApi extends BaseAPI {
 
 
 
+/**
+ * TransactionsApi - axios parameter creator
+ * @export
+ */
+export const TransactionsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Upload a CSV file via multipart/form-data
+         * @summary Upload a CSV file
+         * @param {File} file CSV file
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        kbcTransactionsUpload: async (file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('kbcTransactionsUpload', 'file', file)
+            const localVarPath = `/transaction/upload_kbc_csv`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TransactionsApi - functional programming interface
+ * @export
+ */
+export const TransactionsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TransactionsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Upload a CSV file via multipart/form-data
+         * @summary Upload a CSV file
+         * @param {File} file CSV file
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async kbcTransactionsUpload(file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.kbcTransactionsUpload(file, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TransactionsApi.kbcTransactionsUpload']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TransactionsApi - factory interface
+ * @export
+ */
+export const TransactionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TransactionsApiFp(configuration)
+    return {
+        /**
+         * Upload a CSV file via multipart/form-data
+         * @summary Upload a CSV file
+         * @param {File} file CSV file
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        kbcTransactionsUpload(file: File, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.kbcTransactionsUpload(file, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TransactionsApi - object-oriented interface
+ * @export
+ * @class TransactionsApi
+ * @extends {BaseAPI}
+ */
+export class TransactionsApi extends BaseAPI {
+    /**
+     * Upload a CSV file via multipart/form-data
+     * @summary Upload a CSV file
+     * @param {File} file CSV file
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TransactionsApi
+     */
+    public kbcTransactionsUpload(file: File, options?: RawAxiosRequestConfig) {
+        return TransactionsApiFp(this.configuration).kbcTransactionsUpload(file, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+

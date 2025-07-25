@@ -2,7 +2,9 @@ package rest
 
 import (
 	"encoding/csv"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 	"log/slog"
 	"net/http"
 )
@@ -15,14 +17,29 @@ func CreateClient() *Client {
 	return &Client{}
 }
 
-func (client *Client) receiveKbcTransactionsCsv(g *gin.Context) {
+func (adapter *Client) RegisterRoutes(router *gin.RouterGroup) *Client {
+	router.POST("/upload_kbc_csv", adapter.receiveKbcTransactionsCsv)
+	return adapter
+}
+
+// UploadCSV godoc
+// @Summary Upload a CSV file
+// @Description Upload a CSV file via multipart/form-data
+// @Tags transactions
+// @Accept mpfd
+// @Produce json
+// @Param file formData file true "CSV file"
+// @Success 200 {string} string "ok"
+// @Failure 400 {string} string "bad request"
+// @Id kbcTransactionsUpload
+// @Router /transaction/upload_kbc_csv [post]
+func (adapter *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 	file, err := g.FormFile("file")
 	if err != nil {
 		slog.Error(err.Error())
 		g.JSON(http.StatusBadRequest, gin.H{"failed to get file %s": err.Error()})
 	}
 
-	// Refactor to seperate
 	fileHeader, err := file.Open()
 	defer func() {
 		localErr := fileHeader.Close()
@@ -33,5 +50,12 @@ func (client *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 	}()
 
 	csvReader := csv.NewReader(fileHeader)
-
+	for {
+		record, err := csvReader.Read()
+		if err == io.EOF {
+			break
+		}
+		fmt.Println("CSV Line:", record)
+	}
+	g.String(http.StatusOK, "CSV file processed successfully")
 }

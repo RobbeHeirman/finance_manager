@@ -45,4 +45,30 @@ paths:
       summary: Authenticate using a Google token
       tags:
       - Auth
+  /transaction/upload_kbc_csv:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a CSV file via multipart/form-data
+      operationId: kbcTransactionsUpload
+      parameters:
+      - description: CSV file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: bad request
+          schema:
+            type: string
+      summary: Upload a CSV file
+      tags:
+      - transactions
 swagger: "2.0"
