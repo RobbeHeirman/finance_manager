@@ -1,4 +1,5 @@
-import {createContext, type ReactNode, useContext, useState} from "react";
+import {createContext, type ReactNode, useContext, useEffect, useState} from "react";
+import {setApiLogoutHandler, KEY_USER} from "../api/global_axios.ts";
 
 export type User = {
     jwtToken: string,
@@ -26,7 +27,6 @@ type UserProviderProps = {
     children: ReactNode;
 };
 
-const KEY_USER = "user";
 
 function getUserFromLocalStorage(): User | null {
     const storedUser = localStorage.getItem(KEY_USER)
@@ -53,6 +53,9 @@ export function UserProvider({children}: UserProviderProps) {
         }
         setUser(user)
     }
+    useEffect(() => {
+        setApiLogoutHandler(() => setUserWithLocalStorage(null))
+    }, [])
     return (
         <UserContext value={{user: user, setUser: setUserWithLocalStorage}}>
             {children}
@@ -67,3 +70,4 @@ export function GetUserContext() {
 export function IsUserLoggedIn(): boolean {
     return useContext(UserContext).user != null;
 }
+

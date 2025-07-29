@@ -45,6 +45,8 @@ func JWTMiddleware(publicKey crypto.PublicKey) gin.HandlerFunc {
 		claims, err := security.DecodeAndValidateJWT(publicKey, token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.Abort()
+			return
 		}
 		c.Set(UserIdKey, claims.Id)
 		c.Next()

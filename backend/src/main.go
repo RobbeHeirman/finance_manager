@@ -47,7 +47,7 @@ func main() {
 	jwtMiddleware := rest.JWTMiddleware(envConfig.GetPublicKey())
 	apps := []rest.App{
 		registerApp(server, auth.NewRestApp(envConfig, pool), "/auth"),
-		registerApp(server, transactions.NewRestApp(), "/transactions", jwtMiddleware),
+		registerApp(server, transactions.NewRestApp(), "/transaction", jwtMiddleware),
 	}
 	for _, app := range apps {
 		err := app.Init()

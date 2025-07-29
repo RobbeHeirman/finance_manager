@@ -1,4 +1,5 @@
 import {Configuration, TransactionsApi} from "../api/generated";
+import apiClient from "../api/global_axios.ts";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -7,5 +8,5 @@ export function getApi(): TransactionsApi {
             "basePath": baseUrl
         }
     )
-    return new TransactionsApi(config)
+    return new TransactionsApi(config, baseUrl, apiClient)
 }
