@@ -4,5 +4,5 @@ import "github.com/gin-gonic/gin"
 
 type App interface {
 	Init() error
-	AddRoutes(*gin.Engine)
+	AddRoutes(group *gin.RouterGroup)
 }

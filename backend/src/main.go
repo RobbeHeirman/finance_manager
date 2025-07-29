@@ -5,6 +5,7 @@ import (
 	"finance_manager/src/core/config"
 	"finance_manager/src/core/persistence"
 	"finance_manager/src/core/rest"
+	"finance_manager/src/transactions"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -12,7 +13,7 @@ import (
 	"time"
 )
 
-func CreateRestEndpoint() *gin.Engine {
+func CreateGinServer() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -31,23 +32,32 @@ func CreateRestEndpoint() *gin.Engine {
 	return r
 }
 
+func registerApp(server *gin.Engine, app rest.App, route string, handlers ...gin.HandlerFunc) rest.App {
+	group := server.Group(route, handlers...)
+	app.AddRoutes(group)
+	return app
+}
+
 // @title           Finance manager
 // @version 0.0.1
 func main() {
 	envConfig := config.NewEnvironmentRepository()
 	pool, err := persistence.CreateConnectionPool(envConfig)
-	apps := []rest.App{auth.NewRestApp(envConfig, pool)}
-	r := CreateRestEndpoint()
+	server := CreateGinServer()
+	jwtMiddleware := rest.JWTMiddleware(envConfig.GetPublicKey())
+	apps := []rest.App{
+		registerApp(server, auth.NewRestApp(envConfig, pool), "/auth"),
+		registerApp(server, transactions.NewRestApp(), "/transactions", jwtMiddleware),
+	}
 	for _, app := range apps {
 		err := app.Init()
 		if err != nil {
 			panic(err)
 		}
-		app.AddRoutes(r)
 	}
 
 	if err != nil {
 		log.Fatalf("Failed to create connection pool. Error: %s", err)
 	}
-	_ = r.Run()
+	_ = server.Run()
 }

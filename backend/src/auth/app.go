@@ -29,7 +29,6 @@ func (a *App) Init() error {
 	return a.persist.Init()
 }
 
-func (a *App) AddRoutes(engine *gin.Engine) {
-	group := engine.Group("/auth")
+func (a *App) AddRoutes(group *gin.RouterGroup) {
 	a.client.RegisterRoutes(group)
 }
