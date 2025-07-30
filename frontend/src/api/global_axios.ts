@@ -1,9 +1,9 @@
 import axios, {type AxiosInstance, type InternalAxiosRequestConfig} from "axios";
-
 import {getUserFromLocalStorage} from "../auth//user/user.ts";
 
-export let apiLogoutHandler: (() => void) | null = null;
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+let apiLogoutHandler: (() => void) | null = null;
 
 export function setApiLogoutHandler(f: () => void) {
     apiLogoutHandler = f
@@ -30,7 +30,7 @@ apiClient.interceptors.request.use(
 
 
 apiClient.interceptors.response.use(
-    (response) => response, // For successful responses, just pass them through
+    (response) => response,
     (error) => {
         if (!axios.isAxiosError) {
             return Promise.reject(error)
@@ -38,7 +38,6 @@ apiClient.interceptors.response.use(
         if (error.response.status === 401) {
             if (apiLogoutHandler !== null) {
                 apiLogoutHandler()
-                // delete apiClient.defaults.headers.common["Authorization"]
             } else {
                 console.warn("logout handler not set. Ignoring")
             }
