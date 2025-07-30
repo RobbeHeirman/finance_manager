@@ -9,6 +9,7 @@ import (
 
 type EnvironmentRepository struct {
 	privateKey *rsa.PrivateKey
+	publicKey  *rsa.PublicKey
 }
 
 func NewEnvironmentRepository() *EnvironmentRepository {
@@ -27,8 +28,15 @@ func (repo *EnvironmentRepository) GetPrivateKey() *rsa.PrivateKey {
 	return repo.privateKey
 }
 
-func (repo *EnvironmentRepository) GetPublicKey() string {
-	return os.Getenv("RSA_PUBLIC_KEY")
+func (repo *EnvironmentRepository) GetPublicKey() *rsa.PublicKey {
+	if repo.publicKey == nil {
+		key, err := security.ParseRsaPublicKey(os.Getenv("RSA_PUBLIC_KEY"))
+		if err != nil {
+			slog.Error("Error parsing RSA_PUBLIC_KEY", "err", err)
+		}
+		repo.publicKey = key
+	}
+	return repo.publicKey
 }
 
 func (repo *EnvironmentRepository) GetDatabaseHost() string {

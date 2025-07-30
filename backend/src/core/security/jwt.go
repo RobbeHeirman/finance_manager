@@ -41,7 +41,11 @@ func DecodeAndValidateJWT(publicKey crypto.PublicKey, tokenString string) (*Clai
 		if token.Method.Alg() != getSigningMethod().Alg() {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return publicKey, nil
+		rsaPublicKey, ok := publicKey.(*rsa.PublicKey)
+		if !ok {
+			return nil, fmt.Errorf("public key is not an RSA public key type: %T", publicKey)
+		}
+		return rsaPublicKey, nil
 	})
 	if err != nil {
 		slog.Error("Token parsing failed", "reason", err)

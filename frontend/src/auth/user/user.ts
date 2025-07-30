@@ -22,8 +22,8 @@ export function getUserFromLocalStorage(): User | null {
     const userJson = localStorage.getItem(KEY_USER);
     console.log(userJson)
     if (userJson === null) {
-        console.log("should not happen")
         return null
     }
+    console.log(userJson)
     return JSON.parse(userJson)
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
+	"strings"
 )
 
 type Function[U any, V any] func(*U) (*V, *HttpError)
@@ -41,8 +42,14 @@ const UserIdKey = "user_id"
 
 func JWTMiddleware(publicKey crypto.PublicKey) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader("Authorization")
-		slog.Warn(token)
+		authHeader := c.GetHeader("Authorization")
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			slog.Error("Authorization header not bearer token")
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header format must be Bearer <token>"})
+			c.Abort()
+			return
+		}
+		token := authHeader[len("Bearer "):]
 		claims, err := security.DecodeAndValidateJWT(publicKey, token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
