@@ -1,8 +1,9 @@
 import type {CredentialResponse} from "./google-types.ts";
 import {useEffect, useRef} from 'react';
-import {GetUserContext, type User, type UserContextType} from "../User.tsx";
+import {GetUserContext, type UserContextType} from "../user/userContext.ts";
 import {getApi} from "../api.ts";
 import {toast} from "react-toastify";
+import type {User} from "../user/user.ts";
 
 
 export default function GoogleLoginButton() {

@@ -1,6 +1,7 @@
 import axios, {type AxiosInstance} from "axios";
 
-export const KEY_USER = "user";
+import {getUserFromLocalStorage} from "../auth//user/user.ts";
+
 export let apiLogoutHandler: (() => void) | null = null;
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -11,7 +12,7 @@ export function setApiLogoutHandler(f: () => void ) {
 const apiClient: AxiosInstance = axios.create({
     baseURL: baseUrl,
     headers: {
-        "Authorization": `Bearer ${localStorage.getItem(KEY_USER)}`
+        "Authorization": `Bearer ${getUserFromLocalStorage()?.jwtToken}`
     }
 })
 

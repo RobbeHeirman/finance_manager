@@ -1,5 +1,5 @@
 import LoginScreen from "./auth/LoginScreen.tsx";
-import {IsUserLoggedIn} from "./auth/User.tsx";
+import {IsUserLoggedIn} from "./auth/user/userContext.ts";
 import {ToastContainer} from "react-toastify";
 import {TransactionPage} from "./transactions/page.tsx";
 

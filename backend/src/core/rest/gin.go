@@ -42,6 +42,7 @@ const UserIdKey = "user_id"
 func JWTMiddleware(publicKey crypto.PublicKey) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
+		slog.Warn(token)
 		claims, err := security.DecodeAndValidateJWT(publicKey, token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
