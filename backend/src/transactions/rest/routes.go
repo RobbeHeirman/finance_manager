@@ -3,11 +3,11 @@ package rest
 import (
 	"encoding/csv"
 	"finance_manager/src/transactions/domain"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 )
 
 type Client struct {
@@ -53,12 +53,32 @@ func (adapter *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 	}()
 
 	csvReader := csv.NewReader(fileHeader)
+	batchSize := 1000
+	parserHelper := NewParserManager(batchSize)
+	counter := 0
+	var failedLines []*[]string
 	for {
 		record, err := csvReader.Read()
+		ok := parserHelper.ParseLine(&record)
+		if !ok {
+			failedLines = append(failedLines, &record)
+			slog.Error("Could not parse line", "line", strings.Join(record, ", "))
+		}
+		counter++
+		if counter == 1000 {
+			counter = 0
+			// DO GoRoutine to insert current batch
+			parserHelper = NewParserManager(batchSize)
+
+		}
 		if err == io.EOF {
 			break
 		}
-		fmt.Println("CSV Line:", record)
+	}
+	if failedLines != nil {
+		// TODO Report failed lines
+		g.String(http.StatusOK, "Some lines failed", failedLines)
+		return
 	}
 	g.String(http.StatusOK, "CSV file processed successfully")
 }
