@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/csv"
+	"finance_manager/src/transactions/domain"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -10,11 +11,13 @@ import (
 )
 
 type Client struct {
-	// domain domain.AuthService
+	domain domain.TransactionService
 }
 
-func CreateClient() *Client {
-	return &Client{}
+func CreateClient(domain domain.TransactionService) *Client {
+	return &Client{
+		domain: domain,
+	}
 }
 
 func (adapter *Client) RegisterRoutes(router *gin.RouterGroup) *Client {

@@ -38,6 +38,11 @@ type TransactionService interface {
 }
 
 type TransactionServiceImpl struct {
+	repository TransactionRepository
+}
+
+func CreateNewTransactionService(repo TransactionRepository) TransactionService {
+	return &TransactionServiceImpl{repository: repo}
 }
 
 func (service *TransactionServiceImpl) UpsertTransactions(transactions []*Transaction) {
