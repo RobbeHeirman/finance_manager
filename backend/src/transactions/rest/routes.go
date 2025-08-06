@@ -65,7 +65,7 @@ func (adapter *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 			slog.Error("Could not parse line", "line", strings.Join(record, ", "))
 		}
 		counter++
-		if counter == 1000 {
+		if counter == batchSize {
 			counter = 0
 			// DO GoRoutine to insert current batch
 			parserHelper = NewParserManager(batchSize)

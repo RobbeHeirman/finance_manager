@@ -18,6 +18,20 @@ func kbcCSVLineToTransactionLine(inp *[]string) (*domain.Transaction, error) {
 	return nil, errors.New("Not yet implemented")
 }
 
+func ParseAndUpdateMap[T any](inp *[]string, op func(inpt *[]string) (T, error), m map[string]T, idIndex int) error {
+	key := (*inp)[idIndex]
+	if _, ok := m[key]; ok {
+		return nil
+	}
+	result, err := op(inp)
+	if err != nil {
+		slog.Error("Could not parse line", "line", inp, "error", err)
+		return err
+	}
+	m[key] = result
+	return nil
+}
+
 type KbcParserManager struct {
 	Accounts     map[string]*domain.TransactionalAccount
 	Recipients   map[string]*domain.Recipient
@@ -32,25 +46,22 @@ func NewParserManager(ExpectedCapacity int) *KbcParserManager {
 	}
 }
 
-func (p *KbcParserManager) ParseLine(inp *[]string) bool {
-	transactionalAccountNo, err := kbcCSVLineToTransactionalAccount(inp)
+func (p *KbcParserManager) ParseLine(inp *[]string) error {
+	err := ParseAndUpdateMap(inp, kbcCSVLineToTransactionalAccount, p.Accounts, 0)
 	if err != nil {
-		slog.Error("Could not parse line", "line", inp, "error", err)
-		return false
+		return err
 	}
-	p.Accounts[transactionalAccountNo.AccountNo] = transactionalAccountNo
 
-	recipientAccountNo, err := kbcCSVLineToRecipientAccount(inp)
+	err = ParseAndUpdateMap(inp, kbcCSVLineToRecipientAccount, p.Recipients, 0)
 	if err != nil {
-		slog.Error("Could not parse line", "line", inp, "error", err)
-		return false
+		return err
 	}
-	p.Recipients[recipientAccountNo.AccountNo] = recipientAccountNo
+
 	transaction, err := kbcCSVLineToTransactionLine(inp)
 	if err != nil {
 		slog.Error("Could not parse line", "line", inp, "error", err)
-		return false
+		return err
 	}
 	p.Transactions = append(p.Transactions, transaction)
-	return true
+	return nil
 }
