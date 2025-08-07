@@ -61,7 +61,7 @@ func (repo *TransactionPostgresRepository) UpsertAccounts(transactions []*domain
 	for i, transaction := range transactions {
 		rows[i] = []interface{}{transaction.UserId, transaction.AccountNo}
 	}
-	_, err = tx.CopyFrom(context.Background(), pgx.Identifier{"staging_users"}, []string{"user_id", "account_no"}, pgx.CopyFromRows(rows))
+	_, err = tx.CopyFrom(context.Background(), pgx.Identifier{"staging_accounts"}, []string{"user_id", "account_no"}, pgx.CopyFromRows(rows))
 	if err != nil {
 		slog.Error("Error upserting accounts", "error", err)
 		return err
