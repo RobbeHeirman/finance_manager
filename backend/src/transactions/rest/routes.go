@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/csv"
 	"finance_manager/src/transactions/domain"
+	"finance_manager/src/transactions/rest/adapters"
 	"github.com/gin-gonic/gin"
 	"io"
 	"log/slog"
@@ -54,25 +55,28 @@ func (adapter *Client) receiveKbcTransactionsCsv(g *gin.Context) {
 
 	csvReader := csv.NewReader(fileHeader)
 	batchSize := 1000
-	parserHelper := NewParserManager(batchSize)
+	parserHelper := adapters.NewParserManager(batchSize)
 	counter := 0
 	var failedLines []*[]string
+	writeErrors := make(chan error)
 	for {
 		record, err := csvReader.Read()
-		ok := parserHelper.ParseLine(&record)
-		if !ok {
+		if err == io.EOF {
+			break
+		}
+
+		parseErr := parserHelper.ParseLine(&record)
+		if parseErr != nil {
 			failedLines = append(failedLines, &record)
-			slog.Error("Could not parse line", "line", strings.Join(record, ", "))
+			slog.Error("Could not parse line", "line", strings.Join(record, ", "), "reason", err)
 		}
 		counter++
 		if counter == batchSize {
 			counter = 0
-			// DO GoRoutine to insert current batch
-			parserHelper = NewParserManager(batchSize)
-
-		}
-		if err == io.EOF {
-			break
+			go func() {
+				adapters.KbcParserWriter(adapter.domain, parserHelper, writeErrors)
+			}()
+			parserHelper = adapters.NewParserManager(batchSize)
 		}
 	}
 	if failedLines != nil {

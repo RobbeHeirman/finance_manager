@@ -10,14 +10,15 @@ CREATE TABLE IF NOT EXISTS "transactional_account"
 (
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id    UUID,
-    account_no VARCHAR
+    account_no VARCHAR,
+    UNIQUE (user_id, account_no)
 );
 
 CREATE TABLE IF NOT EXISTS "recipient"
 (
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name       VARCHAR,
-    account_no VARCHAR
+    account_no VARCHAR UNIQUE,
+    name       VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS "recipient_tag"

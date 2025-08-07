@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	"golang.org/x/text/currency"
 	"time"
@@ -34,7 +33,9 @@ type Transaction struct {
 }
 
 type TransactionService interface {
-	UpsertTransactions(transaction []*Transaction)
+	UpsertTransactionalAccounts(acc []*TransactionalAccount) error
+	UpsertRecipient(recipients []*Recipient) error
+	UpsertTransactions(transaction []*Transaction) error
 }
 
 type TransactionServiceImpl struct {
@@ -45,8 +46,14 @@ func CreateNewTransactionService(repo TransactionRepository) TransactionService 
 	return &TransactionServiceImpl{repository: repo}
 }
 
-func (service *TransactionServiceImpl) UpsertTransactions(transactions []*Transaction) {
-	for _, transaction := range transactions {
-		fmt.Printf("%#v\n", transaction)
-	}
+func (service *TransactionServiceImpl) UpsertTransactionalAccounts(acc []*TransactionalAccount) error {
+	return service.repository.UpsertAccounts(acc)
+}
+
+func (service *TransactionServiceImpl) UpsertRecipient(recipients []*Recipient) error {
+	return service.repository.UpsertRecipients(recipients)
+
+}
+func (service *TransactionServiceImpl) UpsertTransactions(transactions []*Transaction) error {
+	return service.repository.UpsertTransactions(transactions)
 }

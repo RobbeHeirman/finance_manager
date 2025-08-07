@@ -1,7 +1,8 @@
-package rest
+package adapters
 
 import (
 	"errors"
+	"finance_manager/src/core/data_structures"
 	"finance_manager/src/transactions/domain"
 	"log/slog"
 )
@@ -33,26 +34,26 @@ func ParseAndUpdateMap[T any](inp *[]string, op func(inpt *[]string) (T, error),
 }
 
 type KbcParserManager struct {
-	Accounts     map[string]*domain.TransactionalAccount
-	Recipients   map[string]*domain.Recipient
-	Transactions []*domain.Transaction
+	accounts     map[string]*domain.TransactionalAccount
+	recipients   map[string]*domain.Recipient
+	transactions []*domain.Transaction
 }
 
 func NewParserManager(ExpectedCapacity int) *KbcParserManager {
 	return &KbcParserManager{
-		Accounts:     make(map[string]*domain.TransactionalAccount, 1),
-		Recipients:   make(map[string]*domain.Recipient, ExpectedCapacity/2),
-		Transactions: make([]*domain.Transaction, ExpectedCapacity),
+		accounts:     make(map[string]*domain.TransactionalAccount, 1),
+		recipients:   make(map[string]*domain.Recipient, ExpectedCapacity/2),
+		transactions: make([]*domain.Transaction, ExpectedCapacity),
 	}
 }
 
 func (p *KbcParserManager) ParseLine(inp *[]string) error {
-	err := ParseAndUpdateMap(inp, kbcCSVLineToTransactionalAccount, p.Accounts, 0)
+	err := ParseAndUpdateMap(inp, kbcCSVLineToTransactionalAccount, p.accounts, 0)
 	if err != nil {
 		return err
 	}
 
-	err = ParseAndUpdateMap(inp, kbcCSVLineToRecipientAccount, p.Recipients, 0)
+	err = ParseAndUpdateMap(inp, kbcCSVLineToRecipientAccount, p.recipients, 0)
 	if err != nil {
 		return err
 	}
@@ -62,6 +63,18 @@ func (p *KbcParserManager) ParseLine(inp *[]string) error {
 		slog.Error("Could not parse line", "line", inp, "error", err)
 		return err
 	}
-	p.Transactions = append(p.Transactions, transaction)
+	p.transactions = append(p.transactions, transaction)
 	return nil
+}
+
+func (p *KbcParserManager) GetAccounts() []*domain.TransactionalAccount {
+	return data_structures.GetMapValues(p.accounts)
+}
+
+func (p *KbcParserManager) GetRecipients() []*domain.Recipient {
+	return data_structures.GetMapValues(p.recipients)
+}
+
+func (p *KbcParserManager) GetTransactions() []*domain.Transaction {
+	return p.transactions
 }
